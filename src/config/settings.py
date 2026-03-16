@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     # my apps
     'apps.card',
+    'apps.transfer',
 
 ]
 
