@@ -1,7 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand
 from apps.card.models import Card
-
+import os
 
 class Command(BaseCommand):
 
@@ -35,8 +35,9 @@ class Command(BaseCommand):
 
         if options['phone']:
             cards = cards.filter(phone__startswith=options['phone'])
-
-        with open('cards_export.csv', 'w', newline='') as file:
+        if not os.path.exists("data"):
+            os.mkdir("data")
+        with open('data/cards_export.csv', 'w', newline='') as file:
             writer = csv.writer(file)
 
             writer.writerow(['id', 'card_number', 'phone', 'status', "expire"])
