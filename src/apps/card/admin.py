@@ -1,63 +1,8 @@
 from django.contrib import admin
 from .models import Card
-from import_export import resources
 from import_export.admin import ImportExportModelAdmin
-from import_export.exceptions import ImportError
+from .resources import CardResource
 # Register your models here.
-
-
-class CardResource(resources.ModelResource):
-    class Meta:
-        model = Card
-        fields = ('card_number', 'phone', 'balance', 'status', 'expire', 'id',) 
-        import_id_fields = ('id',)
-
-    def check_card_number(self, card_number):
-        card_number = str(card_number).replace(" ", "")
-        
-        if not card_number.isdigit():
-            return False
-
-        digits = [int(d) for d in card_number]
-        
-        for i in range(len(digits) - 2, -1, -2):
-            digits[i] *= 2
-            if digits[i] > 9:
-                digits[i] -= 9
-
-        total = sum(digits)
-
-        return total % 10 == 0
-
-    def before_import_row(self, row, row_number=None, **kwargs):
-        print(row)
-        if "card_number" not in row:
-            raise ImportError("Karta raqam bo'lishi majburiy!")
-        elif "phone" not in row:
-            raise ImportError("Telefon raqam bo'lishi majburiy!")
-        
-        card_number = str(row.get("card_number"))
-        card_number = card_number.strip().replace("-", "").replace(" ", "")
-        phone_number = str(row.get("phone"))
-        phone_number = phone_number.strip().replace("-", "").replace(" ", "")
-        if not phone_number.startswith("+"):
-            phone_number = "+" + phone_number
-        if not phone_number.startswith("+998"):
-            phone_number = "+998" + phone_number[1:]
-
-
-        if len(card_number) != 16:
-            raise ImportError(f"Karta raqam 16 xonadan iborat bo'lishi kerak!\nSizdagi ko'rinish: {card_number}")
-        elif len(phone_number) != 13:
-            raise ImportError(f"Telefon raqam ko'rinishi +998901234567 formatda bo'lishi kerak!\nSizdagi ko'rinish: {phone_number}")
-       
-        # elif not self.check_card_number(card_number):
-        #     raise ImportError(f"Karta raqam xaqiqiy emas!\n Raqam: {card_number}")
-
-
-
-
-
 
 
 @admin.register(Card)
