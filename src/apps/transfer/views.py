@@ -3,7 +3,7 @@ from decimal import Decimal
 from datetime import datetime
 from jsonrpcserver import method, dispatch
 from django.http import JsonResponse
-from cards.models import Card
+from apps.card.models import Card
 from .models import Transfer, TransferState, Error
 
 # OTP yuborishni simulyatsiya qilamiz
@@ -80,7 +80,7 @@ def transfer_create(ext_id, sender_card_number, sender_card_expiry,
 # Django view wrapper
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 def json_rpc_view(request):
-    response = dispatch(request.body)
+    request_data = request.body.decode("utf-8")
+    response = dispatch(request_data)
     return JsonResponse(response, safe=False)

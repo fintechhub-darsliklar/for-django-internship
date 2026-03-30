@@ -1,5 +1,12 @@
 from django.contrib import admin
 from .models import Transfer, Error
+from import_export.admin import ImportExportModelAdmin
+from import_export.resources import ModelResource
+
+
+class ErrorResources(ModelResource):
+    class Meta:
+        model = Error
 
 
 @admin.register(Transfer)
@@ -17,10 +24,11 @@ class TransferAdmin(admin.ModelAdmin):
 
 
 @admin.register(Error)
-class ErrorAdmin(admin.ModelAdmin):
+class ErrorAdmin(ImportExportModelAdmin):
 
     list_display = ("code", "en", "ru", "uz")
 
     search_fields = ("code", "en", "ru", "uz")
 
     ordering = ("code",)
+    resource_classes = (ErrorResources,)
